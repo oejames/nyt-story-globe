@@ -3,9 +3,9 @@ import { MongoClient } from 'mongodb';
 import { API_KEY } from './config.js';
 
 const apiKey = API_KEY;
-const mongoUrl = 'mongodb://localhost:27017'; // MongoDB connection URL
-const pagesPerRun = 3; // Number of pages to fetch per run
-const delayBetweenRuns = 60000; // Delay between runs in milliseconds (e.g., 1 minute)
+const mongoUrl = 'mongodb://localhost:27017'; 
+const pagesPerRun = 3; 
+const delayBetweenRuns = 60000; // 1 minute delay
 
 async function fetchModernLoveArticles(page = 0) {
     const query = 'modern love';
