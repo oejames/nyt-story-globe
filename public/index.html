@@ -25,18 +25,16 @@
             pointer-events: auto;
         }
         
-    /* Existing styles remain */
-    .tooltip {
-        position: absolute;
-        display: none;
-        background-color: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: 8px;
-        border-radius: 4px;
-        pointer-events: none;
-        z-index: 1; /* Ensure it appears above the globe */
-    }
-        /* canvas:hover { cursor: default; } */
+        .tooltip {
+            position: absolute;
+            display: none;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            pointer-events: none;
+            z-index: 1; 
+        }
         canvas { cursor: default; }
         canvas * { cursor: pointer; }       
     </style>
@@ -44,7 +42,6 @@
 <body>
     <div id="info"></div>
     <script>
-        // const apiKey = 'Hr3ZyLOuQE0q6XC0csTA3xH10SWzN9Pg';
         let scene, camera, renderer, globe, raycaster, mouse, infoDiv;
         let hoveredPoint = null;
 
@@ -66,19 +63,19 @@
             }).filter(article => article.location !== null);
         }
 
+        // use Compromise to parse the article's text
         function extractLocations(articles) {
-    return articles.map(article => {
-        // Use Compromise to parse the article's text
-        const doc = nlp(article.lead_paragraph);
-        const locations = doc.places().out('array');
+            return articles.map(article => {
+                const doc = nlp(article.lead_paragraph);
+                const locations = doc.places().out('array');
 
-        return {
-            title: article.headline.main,
-            location: locations.length > 0 ? locations[0] : null, // Taking the first found location for simplicity
-            url: article.web_url
-        };
-    }).filter(article => article.location !== null);
-}
+                return {
+                    title: article.headline.main,
+                    location: locations.length > 0 ? locations[0] : null, // Taking the first found location for simplicity
+                    url: article.web_url
+                };
+            }).filter(article => article.location !== null);
+        }
 
     
         function capitalizeLocation(location) {
@@ -106,11 +103,11 @@
             controls.enableDamping = true;
             controls.dampingFactor = 0.25;
             controls.enableZoom = true;
-            controls.enablePan = false; // Disable panning
+            controls.enablePan = false; 
 
             const geometry = new THREE.SphereGeometry(5, 32, 32);
             // const texture = new THREE.TextureLoader().load('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-dark.jpg');
-            const texture = new THREE.TextureLoader().load('./images/earth-living.jpg') // double check this path
+            const texture = new THREE.TextureLoader().load('./images/earth-living.jpg') 
             const material = new THREE.MeshBasicMaterial({ map: texture });
             globe = new THREE.Mesh(geometry, material);
             scene.add(globe);
@@ -122,7 +119,6 @@
 
             infoDiv = document.getElementById('info');
 
-            // Create tooltip element
             tooltip = document.createElement('div');
             tooltip.classList.add('tooltip');
             document.body.appendChild(tooltip);
@@ -145,36 +141,36 @@
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(globe.children);
 
-    // if (intersects.length > 0) {
-    //     renderer.domElement.style.cursor = 'pointer';
-    // } else {
-    //     renderer.domElement.style.cursor = 'default';
-    // }
-    if (intersects.length > 0) {
-        const article = intersects[0].object.userData;
-        const formattedLocation = article.location ? capitalizeLocation(article.location) : 'Unknown Location';
-        const tooltipText = `${article.title}<br>${formattedLocation}`;
-        // const tooltipText = `${article.title}<br>${article.location}`;
-        tooltip.innerHTML = tooltipText;
-        
-            // Convert the 3D position of the point to 2D screen coordinates
-            const vector = intersects[0].object.position.clone();
-            vector.project(camera);
+            // if (intersects.length > 0) {
+            //     renderer.domElement.style.cursor = 'pointer';
+            // } else {
+            //     renderer.domElement.style.cursor = 'default';
+            // }
+            if (intersects.length > 0) {
+                const article = intersects[0].object.userData;
+                const formattedLocation = article.location ? capitalizeLocation(article.location) : 'Unknown Location';
+                const tooltipText = `${article.title}<br>${formattedLocation}`;
+                // const tooltipText = `${article.title}<br>${article.location}`;
+                tooltip.innerHTML = tooltipText;
+                
+                    // convert the 3D position of the point to 2D screen coordinates
+                    const vector = intersects[0].object.position.clone();
+                    vector.project(camera);
 
-            const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
-            const y = -(vector.y * 0.5 - 0.5) * window.innerHeight;
+                    const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+                    const y = -(vector.y * 0.5 - 0.5) * window.innerHeight;
 
-            tooltip.style.left = `${x}px`;
-            tooltip.style.top = `${y}px`;
-            tooltip.style.display = 'block';
-            // tooltip.style.left = `${event.clientX}px`;
-            // tooltip.style.top = `${event.clientY}px`;
-            // tooltip.style.display = 'block';
-        renderer.domElement.style.cursor = 'pointer';
-    } else {
-        tooltip.style.display = 'none';
-        renderer.domElement.style.cursor = 'default';
-    }
+                    tooltip.style.left = `${x}px`;
+                    tooltip.style.top = `${y}px`;
+                    tooltip.style.display = 'block';
+                    // tooltip.style.left = `${event.clientX}px`;
+                    // tooltip.style.top = `${event.clientY}px`;
+                    // tooltip.style.display = 'block';
+                renderer.domElement.style.cursor = 'pointer';
+            } else {
+                tooltip.style.display = 'none';
+                renderer.domElement.style.cursor = 'default';
+            }
 
         }
 
@@ -250,14 +246,13 @@ async function main() {
     
     const articles = await fetchArticlesFromBackend();
     
-    // Assuming you already have a function to add points to your globe
     await addPoints(articles);
     
     animate();
 }
 
 
-        // async function main() { og 
+        // async function main() { // og 
         //     init();
         //     let allArticles = [];
         //     let page = 0;
