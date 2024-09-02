@@ -4,7 +4,7 @@ import { API_KEY } from './config.js';
 
 const apiKey = API_KEY;
 const mongoUrl = 'mongodb://localhost:27017'; 
-const pagesPerRun = 3; 
+const pagesPerRun = 5; 
 const delayBetweenRuns = 60000; // 1 minute delay
 
 async function fetchModernLoveArticles(page = 0) {
@@ -56,14 +56,13 @@ async function storeArticlesInMongoDB(articles) {
         const database = client.db('modern_love_articles');
         const collection = database.collection('articles');
 
-        // Insert or update articles in MongoDB
+        // insert or update articles in MongoDB
         for (const article of articles) {
             const existingArticle = await collection.findOne({ url: article.url });
             if (existingArticle) {
-                // Update existing article
                 await updateArticleGeocode(existingArticle._id, article.lat, article.lon);
             } else {
-                // Insert new article
+                // insert new article
                 await collection.insertOne(article);
                 console.log(`Inserted article with URL ${article.url}.`);
             }
@@ -81,7 +80,7 @@ async function fetchAndStoreArticles(startPage) {
         let allArticles = [];
         let currentPage = page;
 
-        // Fetch multiple pages
+        // fetch multiple pages
         for (let i = 0; i < pagesPerRun; i++) {
             const articles = await fetchModernLoveArticles(currentPage);
             if (articles.length > 0) {
@@ -96,9 +95,9 @@ async function fetchAndStoreArticles(startPage) {
         if (allArticles.length > 0) {
             const locatedArticles = extractLocations(allArticles);
 
-            // Geocode locations and update the database
+            // geocode locations and update the database
             for (const article of locatedArticles) {
-                if (!article.lat || !article.lon) { // Check if geocode is already present
+                if (!article.lat || !article.lon) { // check if geocode is already present
                     const coords = await getGeocode(article.location);
                     if (coords) {
                         article.lat = coords[0];
@@ -120,7 +119,7 @@ async function fetchAndStoreArticles(startPage) {
 }
 
 (async function main() {
-    const startPage = 0; // Start from page 0 or any specific page
+    const startPage = 0; 
     await fetchAndStoreArticles(startPage);
 })();
 

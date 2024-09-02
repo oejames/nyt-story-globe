@@ -4,8 +4,8 @@ import cors from 'cors';
 
 const app = express();
 const port = 3000;
-const mongoUrl = 'mongodb://localhost:27017';
-const client = new MongoClient(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
+const mongoUrl = 'mongodb://127.0.0.1:27017';
+const client = new MongoClient(mongoUrl);
 
 app.use(cors());
 

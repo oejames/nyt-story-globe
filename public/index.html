@@ -8,7 +8,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://unpkg.com/compromise@12.3.0/builds/compromise.min.js"></script>
-    <script src="config.js"></script>
     <style>
         body { margin: 0; overflow: hidden; }
         #info {
@@ -78,12 +77,39 @@
         }
 
     
-        function capitalizeLocation(location) {
+        // function capitalizeLocation(location) { //og, which counted parentheses as first letter
+        //     return location
+        //         .split(' ')
+        //         .map(word => 
+        //             word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        //         .join(' ');
+        // }
+        // function capitalizeLocation(location) { // this one filtered out all parenthesis all together
+        //     return location.replace(/[^a-zA-Z\s]/g, '') // Remove non-alphabetic characters
+        //         .split(' ')
+        //         .filter(word => word.length > 0) // Filter out empty strings
+        //         .map(word =>
+        //             word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        //         .join(' ');
+        // }
+        function capitalizeLocation(location) { 
             return location
                 .split(' ')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .map(word => {
+                    let firstLetterIndex = word.search(/[a-zA-Z]/);
+                    if (firstLetterIndex === -1) return word; // If no alphabetic character is found, return the word as is
+                    return word.slice(0, firstLetterIndex) + 
+                        word.charAt(firstLetterIndex).toUpperCase() + 
+                        word.slice(firstLetterIndex + 1).toLowerCase();
+                })
                 .join(' ');
         }
+
+// Example usage:
+console.log(capitalizeLocation("()new york")); // Outputs: New York
+console.log(capitalizeLocation("(LA) los angeles")); // Outputs: Los Angeles
+console.log(capitalizeLocation("123 london")); // Outputs: London
+
         
 
         async function getGeocode(location) {
