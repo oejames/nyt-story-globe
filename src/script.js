@@ -3,19 +3,29 @@ import { MongoClient } from 'mongodb';
 import { API_KEY } from './config.js';
 
 const apiKey = API_KEY;
-const mongoUrl = 'mongodb://localhost:27017'; 
+const mongoUrl = 'mongodb://127.0.0.1:27017';
 const pagesPerRun = 5; 
 const delayBetweenRuns = 60000; // 1 minute delay
 
 async function fetchModernLoveArticles(page = 0) {
+    console.log(`Fetching articles from page ${page}...`);
     const query = 'modern love';
-    const response = await fetch(`https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${query}&api-key=${apiKey}&page=${page}`);
-    const data = await response.json();
-    return data.response.docs;
+    try {
+        const response = await fetch(`https://api.nytimes.com/svc/search/v2/articlesearch.json?fq=column:("Modern Love")&api-key=${apiKey}&page=${page}`);
+
+
+        const data = await response.json();
+        console.log(`Fetched ${data.response.docs.length} articles from page ${page}.`);
+        return data.response.docs;
+    } catch (error) {
+        console.error('Error fetching articles:', error);
+        return [];
+    }
 }
 
 function extractLocations(articles) {
-    return articles.map(article => {
+    console.log('Extracting locations from articles...');
+    const locations = articles.map(article => {
         const keywords = article.keywords.filter(k => k.name === 'glocations');
         return {
             title: article.headline.main,
@@ -23,15 +33,30 @@ function extractLocations(articles) {
             url: article.web_url
         };
     }).filter(article => article.location !== null);
+    console.log(`Extracted ${locations.length} locations.`);
+    return locations;
 }
 
 async function getGeocode(location) {
-    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`);
-    const data = await response.json();
-    return data.length > 0 ? [parseFloat(data[0].lat), parseFloat(data[0].lon)] : null;
+    console.log(`Geocoding location: ${location}...`);
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`);
+        const data = await response.json();
+        if (data.length > 0) {
+            console.log(`Geocoded ${location} to [${data[0].lat}, ${data[0].lon}]`);
+            return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+        } else {
+            console.log(`No geocode found for ${location}.`);
+            return null;
+        }
+    } catch (error) {
+        console.error('Error getting geocode:', error);
+        return null;
+    }
 }
 
 async function updateArticleGeocode(articleId, lat, lon) {
+    console.log(`Updating article ${articleId} with geocode [${lat}, ${lon}]...`);
     const client = new MongoClient(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 
     try {
@@ -43,12 +68,15 @@ async function updateArticleGeocode(articleId, lat, lon) {
             { $set: { lat, lon } }
         );
         console.log(`Updated article ${articleId} with geocode [${lat}, ${lon}].`);
+    } catch (error) {
+        console.error('Error updating article geocode:', error);
     } finally {
         await client.close();
     }
 }
 
 async function storeArticlesInMongoDB(articles) {
+    console.log(`Storing ${articles.length} articles in MongoDB...`);
     const client = new MongoClient(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 
     try {
@@ -56,23 +84,26 @@ async function storeArticlesInMongoDB(articles) {
         const database = client.db('modern_love_articles');
         const collection = database.collection('articles');
 
-        // insert or update articles in MongoDB
         for (const article of articles) {
             const existingArticle = await collection.findOne({ url: article.url });
             if (existingArticle) {
+                console.log(`Article with URL ${article.url} already exists. Updating geocode...`);
                 await updateArticleGeocode(existingArticle._id, article.lat, article.lon);
             } else {
-                // insert new article
+                console.log(`Inserting new article with URL ${article.url}.`);
                 await collection.insertOne(article);
                 console.log(`Inserted article with URL ${article.url}.`);
             }
         }
+    } catch (error) {
+        console.error('Error storing articles in MongoDB:', error);
     } finally {
         await client.close();
     }
 }
 
 async function fetchAndStoreArticles(startPage) {
+    console.log(`Starting to fetch and store articles from page ${startPage}...`);
     let page = startPage;
     let moreArticlesAvailable = true;
 
@@ -80,8 +111,8 @@ async function fetchAndStoreArticles(startPage) {
         let allArticles = [];
         let currentPage = page;
 
-        // fetch multiple pages
         for (let i = 0; i < pagesPerRun; i++) {
+            console.log(`Fetching articles from page ${currentPage}...`);
             const articles = await fetchModernLoveArticles(currentPage);
             if (articles.length > 0) {
                 allArticles = allArticles.concat(articles);
@@ -95,9 +126,9 @@ async function fetchAndStoreArticles(startPage) {
         if (allArticles.length > 0) {
             const locatedArticles = extractLocations(allArticles);
 
-            // geocode locations and update the database
             for (const article of locatedArticles) {
-                if (!article.lat || !article.lon) { // check if geocode is already present
+                if (!article.lat || !article.lon) {
+                    console.log(`Geocoding article location: ${article.location}...`);
                     const coords = await getGeocode(article.location);
                     if (coords) {
                         article.lat = coords[0];
@@ -119,88 +150,8 @@ async function fetchAndStoreArticles(startPage) {
 }
 
 (async function main() {
+    console.log('Script started.');
     const startPage = 0; 
     await fetchAndStoreArticles(startPage);
+    console.log('Script finished.');
 })();
-
-// import fetch from 'node-fetch';
-// import { MongoClient } from 'mongodb';
-// import { API_KEY } from './config.js';
-
-// const apiKey = API_KEY;
-// const mongoUrl = 'mongodb://localhost:27017'; // MongoDB connection URL
-// const pagesPerRun = 3; // Number of pages to fetch per run
-// const delayBetweenRuns = 60000; // Delay between runs in milliseconds (e.g., 1 minute)
-
-// async function fetchModernLoveArticles(page = 0) {
-//     const query = 'modern love';
-//     const response = await fetch(`https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${query}&api-key=${apiKey}&page=${page}`);
-//     const data = await response.json();
-//     return data.response.docs;
-// }
-
-// function extractLocations(articles) {
-//     return articles.map(article => {
-//         const keywords = article.keywords.filter(k => k.name === 'glocations');
-//         return {
-//             title: article.headline.main,
-//             location: keywords.length > 0 ? keywords[0].value : null,
-//             url: article.web_url
-//         };
-//     }).filter(article => article.location !== null);
-// }
-
-// async function storeArticlesInMongoDB(articles) {
-//     const client = new MongoClient(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
-
-//     try {
-//         await client.connect();
-//         const database = client.db('modern_love_articles');
-//         const collection = database.collection('articles');
-
-//         // Insert articles into MongoDB
-//         const result = await collection.insertMany(articles);
-//         console.log(`${result.insertedCount} articles inserted into MongoDB.`);
-//     } finally {
-//         await client.close();
-//     }
-// }
-
-// async function fetchAndStoreArticles(startPage) {
-//     let page = startPage;
-//     let moreArticlesAvailable = true;
-
-//     while (moreArticlesAvailable) {
-//         let allArticles = [];
-//         let currentPage = page;
-
-//         // Fetch multiple pages
-//         for (let i = 0; i < pagesPerRun; i++) {
-//             const articles = await fetchModernLoveArticles(currentPage);
-//             if (articles.length > 0) {
-//                 allArticles = allArticles.concat(articles);
-//                 currentPage += 1;
-//             } else {
-//                 moreArticlesAvailable = false;
-//                 break;
-//             }
-//         }
-
-//         if (allArticles.length > 0) {
-//             const locatedArticles = extractLocations(allArticles);
-//             await storeArticlesInMongoDB(locatedArticles);
-//         }
-
-//         if (moreArticlesAvailable) {
-//             console.log(`Waiting ${delayBetweenRuns / 1000} seconds before the next run...`);
-//             await new Promise(resolve => setTimeout(resolve, delayBetweenRuns));
-//         }
-
-//         page = currentPage;
-//     }
-// }
-
-// (async function main() {
-//     const startPage = 0; // Start from page 0 or any specific page
-//     await fetchAndStoreArticles(startPage);
-// })();
