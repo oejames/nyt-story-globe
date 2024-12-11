@@ -1,4 +1,4 @@
-import { initThreeJS, addPoints, animate } from './threejs.js';
+import { initThreeJS, addPoints, animate } from './globe.js';
 
 let scene, camera, renderer, globe;
 
