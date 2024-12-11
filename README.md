@@ -10,5 +10,8 @@ The **Modern Love Story Globe** visualizes articles from the New York Times Mode
 ## Project Structure
 
 - `public/index.html`: Main HTML file that sets up the 3D globe visualization using Three.js.
-- `src/script.js`: Script for fetching articles, geocoding locations with OpenStreetMap Nominatim API, and rendering points on the globe, which are added to the MongoDB database.
+- `src/script.js`: Script that fetches articles from the New York Times API and geocodes locations with OpenStreetMap Nominatim API before adding them to the MongoDB database.
 - `src/server.js`: Node.js server that serves article data from MongoDB to the frontend.
+- `public/js/app.js`: JavaScript file for initializing Three.js, handling user interactions, fetching articles from the backend, and rendering points on the globe.
+- `public/css/styles.css`: Contains the styles for the globe and tooltips
+
