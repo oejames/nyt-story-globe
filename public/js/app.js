@@ -52,6 +52,12 @@ function init() {
     document.addEventListener('click', onClick, false);
 }
 
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
 async function addPoints(articles) {
     const pointGeometry = new THREE.SphereGeometry(0.1, 32, 32);
     const pointMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
