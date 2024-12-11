@@ -166,7 +166,7 @@ async function fetchAndStoreArticles(startPage, lastYear) {
 (async function main() {
     console.log('Script started.');
     const startPage = 0;
-    const lastFetchedYear = 2023; // You can store this in a persistent storage to resume
+    const lastFetchedYear = 2023; // store to resume
     await fetchAndStoreArticles(startPage, lastFetchedYear);
     console.log('Script finished.');
 })();
