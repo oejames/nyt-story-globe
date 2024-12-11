@@ -4,7 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import MONGO_URL from './config.js'
+import MONGO_URL from './config';
 
 const app = express();
 const port = process.env.PORT || 3000;
