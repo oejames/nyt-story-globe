@@ -23,30 +23,31 @@ app.use(cors());
 let client;
 let database;
 
-async function connectToMongoDB() {
+
+// Function to fetch articles from MongoDB
+async function fetchArticlesFromMongoDB() {
     try {
-        if (!client) {
-            client = new MongoClient(mongoUrl);
-            await client.connect();
-            database = client.db('modern_love_articles'); // Replace with your database name
-            console.log('Connected to MongoDB');
-        }
+        await client.connect();
+        console.log('Connected to MongoDB');
+        const database = client.db('modern_love_articles');
+        const collection = database.collection('articles');
+        const articles = await collection.find({}).toArray(); // Fetch all articles
+        return articles;
     } catch (error) {
-        console.error('Error connecting to MongoDB:', error.message);
-        throw error;
+        console.error('Error fetching articles:', error.message);
+        throw error; // Re-throw for further handling
+    } finally {
+        await client.close();
     }
 }
 
-// Endpoint to fetch articles
+// API endpoint to fetch articles
 app.get('/api/articles', async (req, res) => {
     try {
-        await connectToMongoDB();
-        const collection = database.collection('articles'); // Replace with your collection name
-        const articles = await collection.find({}).toArray();
-        res.json(articles);
+        const articles = await fetchArticlesFromMongoDB();
+        res.json(articles); // Send articles as JSON
     } catch (error) {
-        console.error('Error fetching articles:', error.message);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: 'Failed to fetch articles.' });
     }
 });
 
