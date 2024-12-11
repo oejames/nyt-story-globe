@@ -1,12 +1,13 @@
 import express from 'express';
 import { MongoClient } from 'mongodb';
 import cors from 'cors';
+import path from 'path';
 
 const app = express();
 const port = process.env.PORT || 3000;
 const mongoUrl = process.env.MONGODB_URI;
 const client = new MongoClient(mongoUrl);
-const path = require('path');
+
 
 app.use(cors());
 
