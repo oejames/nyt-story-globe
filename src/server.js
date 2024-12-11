@@ -27,19 +27,21 @@ let database;
 // Function to fetch articles from MongoDB
 async function fetchArticlesFromMongoDB() {
     try {
+        console.log('Connecting to MongoDB...');
         await client.connect();
         console.log('Connected to MongoDB');
         const database = client.db('modern_love_articles');
         const collection = database.collection('articles');
-        const articles = await collection.find({}).toArray(); // Fetch all articles
+        const articles = await collection.find({}).toArray();
         return articles;
     } catch (error) {
-        console.error('Error fetching articles:', error.message);
+        console.error('Error connecting to MongoDB:', error);
         throw error; // Re-throw for further handling
     } finally {
         await client.close();
     }
 }
+
 
 // API endpoint to fetch articles
 app.get('/api/articles', async (req, res) => {
