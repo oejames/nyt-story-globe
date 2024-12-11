@@ -23,15 +23,15 @@ app.use(cors());
 let client = new MongoClient(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 let database;
 
-// Function to fetch articles from MongoDB
+// Function to connect to MongoDB and fetch articles
 async function fetchArticlesFromMongoDB() {
     try {
-        console.log('Connecting to MongoDB...');
-        if (!client.isConnected()) {
-            await client.connect(); // Ensure connection is established
+        if (!database) {
+            console.log('Connecting to MongoDB...');
+            await client.connect();
+            console.log('Connected to MongoDB');
+            database = client.db('modern_love_articles');
         }
-        console.log('Connected to MongoDB');
-        database = client.db('modern_love_articles');
         const collection = database.collection('articles');
         const articles = await collection.find({}).toArray();
         return articles;
