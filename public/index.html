@@ -262,7 +262,13 @@ console.log(capitalizeLocation("123 london")); // Outputs: London
         }
 
         async function fetchArticlesFromBackend() {
-    const response = await fetch('http://localhost:3000/api/articles');
+    // const response = await fetch('http://localhost:3000/api/articles');
+    const apiUrl = window.location.hostname === 'localhost' 
+    ? 'http://localhost:3000/api/articles' 
+    : '/api/articles';
+
+    const response = await fetch(apiUrl);
+
     const articles = await response.json();
     return articles;
 }
