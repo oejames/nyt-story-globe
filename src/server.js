@@ -4,7 +4,7 @@ import cors from 'cors';
 
 const app = express();
 const port = 3000;
-const mongoUrl = MONGODB_URI;
+const mongoUrl = process.env.MONGODB_URI;
 const client = new MongoClient(mongoUrl);
 
 app.use(cors());
