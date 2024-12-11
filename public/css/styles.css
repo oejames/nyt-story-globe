@@ -1,0 +1,27 @@
+body { margin: 0; overflow: hidden; }
+#info {
+    position: absolute;
+    top: 80%;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-family: Arial, sans-serif;
+    pointer-events: none;
+}
+#info a {
+    color: #ff9900;
+    pointer-events: auto;
+}
+
+.tooltip {
+    position: absolute;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 1;
+}
+canvas { cursor: default; }
+canvas * { cursor: pointer; }
