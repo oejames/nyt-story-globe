@@ -2,6 +2,8 @@ import express from 'express';
 import { MongoClient } from 'mongodb';
 import cors from 'cors';
 import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,6 +21,11 @@ async function fetchArticlesFromMongoDB() {
     await client.close();
     return articles;
 }
+
+// Get the current directory from the ES module context
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, '../public')));
