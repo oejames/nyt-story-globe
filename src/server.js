@@ -4,10 +4,11 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import MONGO_URL from './config.js'
 
 const app = express();
 const port = process.env.PORT || 3000;
-const mongoUrl = process.env.MONGODB_URI;
+const mongoUrl = MONGO_URL;
 const client = new MongoClient(mongoUrl);
 
 
