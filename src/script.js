@@ -1,18 +1,17 @@
 import fetch from 'node-fetch';
 import { MongoClient } from 'mongodb';
-import { API_KEY } from './config.js';
+import { API_KEY, MONGO_URL } from './config.js';
 
 const apiKey = API_KEY;
-const mongoUrl = 'mongodb://127.0.0.1:27017';
-const pagesPerRun = 5; 
+const mongoUrl = MONGO_URL;
+const pagesPerRun = 5;
 const delayBetweenRuns = 60000; // 1 minute delay
 
 async function fetchModernLoveArticles(page = 0) {
     console.log(`Fetching articles from page ${page}...`);
     const query = 'modern love';
     try {
-        const response = await fetch(`https://api.nytimes.com/svc/search/v2/articlesearch.json?fq=column:("Modern Love")&api-key=${apiKey}&page=${page}`);
-
+        const response = await fetch(`https://api.nytimes.com/svc/search/v2/articlesearch.json?fq=column:("Modern Love")&sort=newest&api-key=${apiKey}&page=${page}`);
 
         const data = await response.json();
         console.log(`Fetched ${data.response.docs.length} articles from page ${page}.`);
@@ -30,7 +29,8 @@ function extractLocations(articles) {
         return {
             title: article.headline.main,
             location: keywords.length > 0 ? keywords[0].value : null,
-            url: article.web_url
+            url: article.web_url,
+            year: article.pub_date ? new Date(article.pub_date).getFullYear() : null
         };
     }).filter(article => article.location !== null);
     console.log(`Extracted ${locations.length} locations.`);
@@ -102,10 +102,11 @@ async function storeArticlesInMongoDB(articles) {
     }
 }
 
-async function fetchAndStoreArticles(startPage) {
-    console.log(`Starting to fetch and store articles from page ${startPage}...`);
+async function fetchAndStoreArticles(startPage, lastYear) {
+    console.log(`Starting to fetch and store articles from page ${startPage}, starting from year ${lastYear}...`);
     let page = startPage;
     let moreArticlesAvailable = true;
+    let lastFetchedYear = lastYear;
 
     while (moreArticlesAvailable) {
         let allArticles = [];
@@ -126,6 +127,16 @@ async function fetchAndStoreArticles(startPage) {
         if (allArticles.length > 0) {
             const locatedArticles = extractLocations(allArticles);
 
+            // Track the most recent year from the fetched articles
+            const mostRecentYear = locatedArticles.reduce((maxYear, article) => {
+                if (article.year && article.year > maxYear) {
+                    return article.year;
+                }
+                return maxYear;
+            }, lastFetchedYear);
+
+            lastFetchedYear = mostRecentYear;
+
             for (const article of locatedArticles) {
                 if (!article.lat || !article.lon) {
                     console.log(`Geocoding article location: ${article.location}...`);
@@ -138,6 +149,7 @@ async function fetchAndStoreArticles(startPage) {
             }
 
             await storeArticlesInMongoDB(locatedArticles);
+            console.log(`Last year fetched: ${lastFetchedYear}`);
         }
 
         if (moreArticlesAvailable) {
@@ -147,11 +159,14 @@ async function fetchAndStoreArticles(startPage) {
 
         page = currentPage;
     }
+
+    console.log(`Scraping finished. Last year fetched: ${lastFetchedYear}`);
 }
 
 (async function main() {
     console.log('Script started.');
-    const startPage = 0; 
-    await fetchAndStoreArticles(startPage);
+    const startPage = 0;
+    const lastFetchedYear = 2023; // You can store this in a persistent storage to resume
+    await fetchAndStoreArticles(startPage, lastFetchedYear);
     console.log('Script finished.');
 })();
