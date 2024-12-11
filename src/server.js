@@ -1,4 +1,4 @@
-import express from 'express';
+import express from 'express'; 
 import { MongoClient } from 'mongodb';
 import cors from 'cors';
 import path from 'path';
@@ -7,7 +7,7 @@ import { dirname } from 'path';
 
 const app = express();
 const port = process.env.PORT || 3000;
-const mongoUrl = process.env.MONGODB_URI;
+const mongoUrl = process.env.MONGODB_URI; // Make sure MONGODB_URI is set in the environment
 
 // Get the current directory from the ES module context
 const __filename = fileURLToPath(import.meta.url);
@@ -20,28 +20,26 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use(cors());
 
 // MongoDB Client Setup
-let client;
+let client = new MongoClient(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 let database;
-
 
 // Function to fetch articles from MongoDB
 async function fetchArticlesFromMongoDB() {
     try {
         console.log('Connecting to MongoDB...');
-        await client.connect();
+        if (!client.isConnected()) {
+            await client.connect(); // Ensure connection is established
+        }
         console.log('Connected to MongoDB');
-        const database = client.db('modern_love_articles');
+        database = client.db('modern_love_articles');
         const collection = database.collection('articles');
         const articles = await collection.find({}).toArray();
         return articles;
     } catch (error) {
         console.error('Error connecting to MongoDB:', error);
         throw error; // Re-throw for further handling
-    } finally {
-        await client.close();
     }
 }
-
 
 // API endpoint to fetch articles
 app.get('/api/articles', async (req, res) => {
