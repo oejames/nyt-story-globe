@@ -22,7 +22,7 @@ The **Modern Love Story Globe** visualizes articles from the New York Times Mode
  ```bash
  npm install
  ```
-2. Create a config.js file with the following variables
+2. Create a config.js file inside server/ with the following variables
 ```bash
 API_KEY=your-nyt-api-key
 MONGO_URL=your-mongodb-connection-string
