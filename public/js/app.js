@@ -195,20 +195,7 @@ function onWindowResize() {
     return articles;
 }
 
-async function updateStats(articles) {
-    // Count total stories with locations
-    const storiesWithLocation = articles.filter(article => article.lat && article.lon).length;
-    document.getElementById('story-count').textContent = storiesWithLocation;
 
-    // Count unique countries
-    const uniqueCountries = new Set();
-    articles.forEach(article => {
-        if (article.country) {
-            uniqueCountries.add(article.country);
-        }
-    });
-    document.getElementById('country-count').textContent = uniqueCountries.size;
-}
 
 async function main() {
     init();
@@ -216,7 +203,6 @@ async function main() {
     const articles = await fetchArticlesFromBackend();
     
     await addPoints(articles);
-    await updateStats(articles);
     
     animate();
 }
