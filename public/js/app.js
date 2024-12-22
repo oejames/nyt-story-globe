@@ -199,12 +199,13 @@ function onWindowResize() {
 // Function to get country name using OpenStreetMap Nominatim API
 async function getCountryFromNominatim(lat, lon) {
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
-    const response = await fetch(url, { headers: { 'User-Agent': 'YourAppName/1.0' } });
+    const response = await fetch(url);
     const data = await response.json();
 
     // Extract and return the country from the address
     return data.address?.country || null;
 }
+
 
 
 async function updateStats(articles) {
