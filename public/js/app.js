@@ -114,9 +114,17 @@ function onWindowResize() {
 
         }
 
+        let lastClickTime = 0;
+        const doubleClickDelay = 300; // milliseconds
+        
         function onClick(event) {
+            const currentTime = new Date().getTime();
             if (hoveredPoint) {
-                window.open(hoveredPoint.userData.url, '_blank');
+                if (currentTime - lastClickTime < doubleClickDelay) {
+                    // Double click detected, open the URL
+                    window.open(hoveredPoint.userData.url, '_blank');
+                }
+                lastClickTime = currentTime;
             }
         }
 

@@ -12,24 +12,24 @@
     <style>
         .header {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
             background: rgba(0, 0, 0, 0.7);
             color: white;
             padding: 20px;
             z-index: 10;
             backdrop-filter: blur(4px);
-        }
-        .header-content {
-            max-width: 800px;
-            margin: 0 auto;
+            border-radius: 8px;
+            max-width: 300px;
         }
         .legend {
             display: flex;
-            gap: 20px;
+            flex-direction: column;
+            gap: 10px;
             font-size: 14px;
             color: #ccc;
+            margin-top: 15px;
         }
         .dot {
             width: 10px;
@@ -43,14 +43,13 @@
 </head>
 <body>
     <div class="header">
-        <div class="header-content">
-            <h1>Modern Love Stories Around the Globe</h1>
-            <p>Explore New York Times Modern Love columns mapped across the world. Each red dot represents a story's location.</p>
-            <div class="legend">
-                <div><span class="dot"></span>Story Location</div>
-                <div>👆 Hover over points to read story titles</div>
-                <div>🖱️ Click and drag to rotate • Scroll to zoom</div>
-            </div>
+        <h1 style="font-size: 24px; margin-bottom: 10px;">Modern Love Stories</h1>
+        <p style="font-size: 14px; line-height: 1.4;">Explore New York Times Modern Love columns mapped across the world.</p>
+        <div class="legend">
+            <div><span class="dot"></span>Story Location</div>
+            <div>👆 Hover over points to read story titles</div>
+            <div>🖱️ Click twice to read story</div>
+            <div>🔄 Drag to rotate • Scroll to zoom</div>
         </div>
     </div>
     <div id="info"></div>
