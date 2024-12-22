@@ -195,21 +195,63 @@ function onWindowResize() {
     return articles;
 }
 
+// async function updateStats(articles) {
+//     // Count total stories with locations
+//     const storiesWithLocation = articles.filter(article => article.lat && article.lon).length;
+//     document.getElementById('story-count').textContent = storiesWithLocation;
+
+//     // Count unique "country regions" based on coordinates
+//     const uniqueRegions = new Set();
+//     articles.forEach(article => {
+//         if (article.lat && article.lon) {
+//             // Round coordinates to nearest whole number to group nearby locations
+//             // This gives us a rough approximation of countries
+//             const regionKey = `${Math.round(article.lat)},${Math.round(article.lon)}`;
+//             uniqueRegions.add(regionKey);
+//         }
+//     });
+//     document.getElementById('country-count').textContent = uniqueRegions.size;
+// }
+
 async function updateStats(articles) {
     // Count total stories with locations
     const storiesWithLocation = articles.filter(article => article.lat && article.lon).length;
     document.getElementById('story-count').textContent = storiesWithLocation;
 
-    // Count unique "country regions" based on coordinates
+    // Track countries and their frequencies
+    const countryFrequencies = new Map();
     const uniqueRegions = new Set();
-    articles.forEach(article => {
+
+    for (const article of articles) {
         if (article.lat && article.lon) {
-            // Round coordinates to nearest whole number to group nearby locations
-            // This gives us a rough approximation of countries
-            const regionKey = `${Math.round(article.lat)},${Math.round(article.lon)}`;
-            uniqueRegions.add(regionKey);
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${article.lat}&lon=${article.lon}`);
+                const data = await response.json();
+                if (data.address && data.address.country) {
+                    const country = data.address.country;
+                    countryFrequencies.set(country, (countryFrequencies.get(country) || 0) + 1);
+                    uniqueRegions.add(country);
+                }
+            } catch (error) {
+                console.error('Error getting country:', error);
+            }
+            // Add a small delay to avoid hitting rate limits
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
+    }
+
+    // Console log countries and their frequencies
+    console.log('\nCountries featured in Modern Love stories:');
+    console.log('---------------------------------------');
+    const sortedCountries = Array.from(countryFrequencies.entries())
+        .sort((a, b) => b[1] - a[1]); // Sort by frequency, highest first
+
+    sortedCountries.forEach(([country, count]) => {
+        console.log(`${country}: ${count} stories`);
     });
+    console.log('---------------------------------------');
+    console.log(`Total unique countries: ${uniqueRegions.size}`);
+
     document.getElementById('country-count').textContent = uniqueRegions.size;
 }
 
