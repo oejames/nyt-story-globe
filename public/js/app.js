@@ -88,9 +88,9 @@ function onWindowResize() {
             // }
             if (intersects.length > 0) {
                 const article = intersects[0].object.userData;
-                const formattedLocation = article.location ? capitalizeLocation(article.location) : 'Unknown Location';
-                // const tooltipText = `${article.title}<br>${formattedLocation}`;
-                const tooltipText = `${article.title}`;
+                // const formattedLocation = article.location ? capitalizeLocation(article.location) : 'Unknown Location';
+                const formattedLocation = article.location;
+                const tooltipText = `${article.title}<br>${formattedLocation}`;
                 // const tooltipText = `${article.title}<br>${article.location}`;
                 tooltip.innerHTML = tooltipText;
                 
