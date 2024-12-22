@@ -1,9 +1,9 @@
 import fetch from 'node-fetch';
 import { MongoClient } from 'mongodb';
-import { API_KEY, MONGO_URL } from './config.js';
+// import { API_KEY, MONGODB_URI} from './config.js';
 
-const apiKey = API_KEY;
-const mongoUrl = MONGO_URL;
+const apiKey = process.env.API_KEY;
+const mongoUrl = process.env.MONGODB_URI;
 const pagesPerRun = 5;
 const delayBetweenRuns = 60000; // 1 minute delay
 
