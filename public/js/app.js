@@ -197,22 +197,35 @@ function onWindowResize() {
 }
 
 async function updateStats(articles) {
-    // Count total stories with locations
     const storiesWithLocation = articles.filter(article => article.lat && article.lon).length;
     document.getElementById('story-count').textContent = storiesWithLocation;
 
-    // Count unique "country regions" based on coordinates
-    const uniqueRegions = new Set();
-    articles.forEach(article => {
+    const uniqueCountries = new Set();
+
+    for (const article of articles) {
         if (article.lat && article.lon) {
-            // Round coordinates to nearest whole number to group nearby locations
-            // This gives us a rough approximation of countries
-            const regionKey = `${Math.round(article.lat)},${Math.round(article.lon)}`;
-            uniqueRegions.add(regionKey);
+            try {
+                const country = await getCountryFromNominatim(article.lat, article.lon);
+                if (country) {
+                    uniqueCountries.add(country);
+                }
+            } catch (error) {
+                console.error(`Error determining country for coordinates (${article.lat}, ${article.lon}):`, error);
+            }
         }
-    });
-    document.getElementById('country-count').textContent = uniqueRegions.size;
+    }
+
+    document.getElementById('country-count').textContent = uniqueCountries.size;
 }
+
+// Function to get country name using OpenStreetMap Nominatim API
+async function getCountryFromNominatim(lat, lon) {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
+    const response = await fetch(url, { headers: { 'User-Agent': 'YourAppName/1.0' } });
+    const data = await response.json();
+    return data.address?.country || null;
+}
+
 
 async function main() {
     init();
