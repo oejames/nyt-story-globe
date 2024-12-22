@@ -196,6 +196,17 @@ function onWindowResize() {
     return articles;
 }
 
+// Function to get country name using OpenStreetMap Nominatim API
+async function getCountryFromNominatim(lat, lon) {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
+    const response = await fetch(url, { headers: { 'User-Agent': 'YourAppName/1.0' } });
+    const data = await response.json();
+
+    // Extract and return the country from the address
+    return data.address?.country || null;
+}
+
+
 async function updateStats(articles) {
     const storiesWithLocation = articles.filter(article => article.lat && article.lon).length;
     document.getElementById('story-count').textContent = storiesWithLocation;
@@ -218,13 +229,7 @@ async function updateStats(articles) {
     document.getElementById('country-count').textContent = uniqueCountries.size;
 }
 
-// Function to get country name using OpenStreetMap Nominatim API
-async function getCountryFromNominatim(lat, lon) {
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
-    const response = await fetch(url, { headers: { 'User-Agent': 'YourAppName/1.0' } });
-    const data = await response.json();
-    return data.address?.country || null;
-}
+
 
 
 async function main() {
