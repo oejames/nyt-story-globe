@@ -5,9 +5,9 @@
   "description": "",
   "main": "config.js",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "node server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon server/server.js"
   },
   "engines": {
     "node": ">=16.0.0"

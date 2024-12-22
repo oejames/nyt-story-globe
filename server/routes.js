@@ -1,12 +1,13 @@
 import express from 'express';
 import path from 'path';
 import { connectDB } from './db.js';
+import { MONGO_URL } from './config.js';
 
 const router = express.Router();
 
 router.get('/api/articles', async (req, res) => {
     try {
-        const db = await connectDB(process.env.MONGODB_URI);
+        const db = await connectDB(process.env.MONGODB_URI || MONGO_URL);
         const articles = await db.collection('articles').find({}).toArray();
         res.json(articles);
     } catch (error) {
