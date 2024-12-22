@@ -1,22 +1,22 @@
-import { SceneManager } from './SceneManager.js';
-import { Globe } from './Globe.js';
-import { fetchArticles } from './api.js';
+import { init, addPoints, animate } from './scene.js';
+
+async function fetchArticlesFromBackend() {
+    const apiUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:3000/api/articles' 
+        : '/api/articles';
+
+    const response = await fetch(apiUrl);
+    const articles = await response.json();
+    return articles;
+}
 
 async function main() {
-    const sceneManager = new SceneManager();
-    sceneManager.init();
-
-    const globe = new Globe();
-    const globeMesh = globe.init();
-    sceneManager.scene.add(globeMesh);
-
-    try {
-        const articles = await fetchArticles();
-        await globe.addPoints(articles);
-        sceneManager.animate(globe);
-    } catch (error) {
-        console.error('Failed to initialize application:', error);
-    }
+    init();
+    
+    const articles = await fetchArticlesFromBackend();
+    await addPoints(articles);
+    
+    animate();
 }
 
 main();
