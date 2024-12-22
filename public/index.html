@@ -18,59 +18,42 @@
             z-index: 1000;
             text-align: center;
             color: white;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+
+        .header-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .header-description {
+            font-size: 1.1rem;
             max-width: 600px;
-        }
-
-        .header-container h1 {
-            margin: 0 0 10px 0;
-            font-size: 24px;
-        }
-
-        .header-container p {
-            margin: 0;
-            font-size: 16px;
-            line-height: 1.5;
+            line-height: 1.4;
+            margin: 0 auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
         }
 
         .instructions {
-            margin-top: 10px;
+            font-size: 0.9rem;
+            margin-top: 1rem;
             font-style: italic;
-            font-size: 14px;
-        }
-
-        #info {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            color: white;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
-        }
-
-        .tooltip {
-            position: absolute;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 14px;
-            pointer-events: none;
-            display: none;
-            z-index: 1000;
-            max-width: 300px;
         }
     </style>
 </head>
 <body>
     <div class="header-container">
-        <h1>Modern Love Stories Around the Globe</h1>
-        <p>Explore a collection of New York Times Modern Love stories mapped across the world. Each red point represents a location mentioned in these compelling narratives of love, loss, and human connection.</p>
-        <p class="instructions">🌍 Drag to rotate | 🖱️ Scroll to zoom | Click a point to read the full story</p>
+        <h1 class="header-title">Modern Love Story Globe</h1>
+        <p class="header-description">
+            Explore a world of love stories from The New York Times' Modern Love column. Each red dot represents a location where a story took place, bringing to life the global tapestry of human connections and relationships.
+        </p>
+        <p class="instructions">
+            Drag to rotate • Scroll to zoom • Hover over dots to read story titles • Click to read full stories
+        </p>
     </div>
     <div id="info"></div>
     <script src="/js/app.js"></script>
