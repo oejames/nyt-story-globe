@@ -33,6 +33,7 @@
             font-size: 14px;
             color: #ccc;
             margin-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
         .dot {
             width: 10px;
@@ -42,12 +43,44 @@
             display: inline-block;
             margin-right: 8px;
         }
+        .stats-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .stat-box {
+            flex: 1;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #ccc;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <h1 style="font-size: 24px; margin-bottom: 10px;">Modern Love Stories</h1>
         <p style="font-size: 14px; line-height: 1.4;">Explore New York Times Modern Love columns mapped across the world.</p>
+        <div id="stats" class="stats-container">
+            <div class="stat-box">
+                <div class="stat-label">Stories Mapped</div>
+                <div class="stat-value" id="story-count">144</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Countries Featured</div>
+                <div class="stat-value" id="country-count">...</div>
+            </div>
+        </div>
+
         <div class="legend">
             <!-- <div>👆 Hover over points to read story titles</div> -->
             <!-- <div>🖱️ Click twice to read story</div> -->

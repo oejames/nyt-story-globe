@@ -195,12 +195,30 @@ function onWindowResize() {
     return articles;
 }
 
+async function updateStats(articles) {
+    // Count total stories with locations
+    const storiesWithLocation = articles.filter(article => article.lat && article.lon).length;
+    document.getElementById('story-count').textContent = storiesWithLocation;
 
+    // Count unique "country regions" based on coordinates
+    const uniqueRegions = new Set();
+    articles.forEach(article => {
+        if (article.lat && article.lon) {
+            // Round coordinates to nearest whole number to group nearby locations
+            // This gives us a rough approximation of countries
+            const regionKey = `${Math.round(article.lat)},${Math.round(article.lon)}`;
+            uniqueRegions.add(regionKey);
+        }
+    });
+    document.getElementById('country-count').textContent = uniqueRegions.size;
+}
 
 async function main() {
     init();
     
     const articles = await fetchArticlesFromBackend();
+
+    await updateStats(articles);
     
     await addPoints(articles);
     
