@@ -16,7 +16,7 @@ router.get('/api/articles', async (req, res) => {
 });
 
 router.get('/', (req, res) => {
-    res.sendFile(path.join(process.cwd(), '/client/index.html'));
+    res.sendFile(path.join(process.cwd(), '../client/index.html'));
 });
 
 export default router;

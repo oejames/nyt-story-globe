@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
-app.use(express.static('client'));
+app.use(express.static('../client'));
 
 // Routes
 app.use('/', routes);
