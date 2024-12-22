@@ -11,11 +11,8 @@ The **Modern Love Story Globe** visualizes articles from the New York Times Mode
 
 ## Project Structure
 
-- `server/script.js`: Script that fetches articles from the New York Times API and geocodes locations with OpenStreetMap Nominatim API before adding them to the MongoDB database.
-- `server/server.js`: Node.js server that serves article data from MongoDB to the frontend.
-- `client/index.html`: Main HTML file that sets up the 3D globe visualization using Three.js.
-- `client/js/scene.js`: JavaScript file for initializing Three.js
-- `client/js/main.js`: Fetching articles from the backend, and rendering points on the globe.
+- `server`: Contains the script that fetches articles from the New York Times API and geocodes locations with OpenStreetMap Nominatim API before adding them to the database, and the node.js server that serves article data to the frontend
+- `client`: Sets up the 3D globe visualization using Three.js and renders visuals
 
 
 
@@ -25,7 +22,7 @@ The **Modern Love Story Globe** visualizes articles from the New York Times Mode
  ```bash
  npm install
  ```
-2. Create a config.js file with the following variables:
+2. Create a config.js file with the following variables
 ```bash
 API_KEY=your-nyt-api-key
 MONGO_URL=your-mongodb-connection-string
@@ -36,7 +33,7 @@ cd server
 node script.js
 ```
 5. Start the MongoDB Server
-6. Start the server:
+6. Start the app server
 ```bash
 npm start
 ```
