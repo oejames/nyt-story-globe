@@ -1,4 +1,3 @@
-// Utility functions for location processing and geocoding
 function extractFirstLocations(articles) {
     return articles.map(article => {
         const keywords = article.keywords.filter(k => k.name === 'glocations');
