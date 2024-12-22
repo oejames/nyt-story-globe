@@ -25,7 +25,7 @@ The **Modern Love Story Globe** visualizes articles from the New York Times Mode
 2. Create a .env file in the project root with the following variables
 ```bash
 API_KEY=your-nyt-api-key
-MONGODB_UIL=your-mongodb-connection-string
+MONGODB_URI=your-mongodb-connection-string
 
 ```
 3. Start the MongoDB Server
