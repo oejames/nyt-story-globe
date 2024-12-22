@@ -77,43 +77,55 @@ function onWindowResize() {
         function onMouseMove(event) {
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
+        
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(globe.children);
-
-            // if (intersects.length > 0) {
-            //     renderer.domElement.style.cursor = 'pointer';
-            // } else {
-            //     renderer.domElement.style.cursor = 'default';
-            // }
+        
             if (intersects.length > 0) {
-                const article = intersects[0].object.userData;
+                const intersectedObject = intersects[0].object;
+        
+                // renderer.domElement.style.cursor = 'pointer';
+                // const article = intersects[0].object.userData;
                 // const formattedLocation = article.location ? capitalizeLocation(article.location) : 'Unknown Location';
-                const formattedLocation = article.location;
-                const tooltipText = `${article.title}<br>${formattedLocation}`;
-                // const tooltipText = `${article.title}<br>${article.location}`;
-                tooltip.innerHTML = tooltipText;
-                
-                    // convert the 3D position of the point to 2D screen coordinates
-                    const vector = intersects[0].object.position.clone();
-                    vector.project(camera);
-
+                // const tooltipText = `${article.title}<br>${formattedLocation}`;
+                // tooltip.innerHTML = tooltipText;
+                // tooltip.style.left = `${event.clientX}px`;
+                // tooltip.style.top = `${event.clientY}px`;
+                // tooltip.style.display = 'block';
+        
+                // Check if the point is visible to the camera
+                const pointPosition = intersectedObject.position.clone();
+                const cameraDirection = camera.position.clone().sub(pointPosition).normalize();
+                const pointDirection = pointPosition.clone().normalize();
+                const dotProduct = cameraDirection.dot(pointDirection);
+        
+                if (dotProduct > 0) { // The point is on the visible side of the globe
+                    const article = intersectedObject.userData;
+                    const formattedLocation = article.location; // Keep using your formatted location logic
+                    const tooltipText = `${article.title}<br>${formattedLocation}`;
+                    tooltip.innerHTML = tooltipText;
+        
+                    // Updated logic to position tooltip based on 3D-to-2D projection
+                    const vector = pointPosition.project(camera);
                     const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
                     const y = -(vector.y * 0.5 - 0.5) * window.innerHeight;
-
+        
                     tooltip.style.left = `${x}px`;
                     tooltip.style.top = `${y}px`;
                     tooltip.style.display = 'block';
-                    // tooltip.style.left = `${event.clientX}px`;
-                    // tooltip.style.top = `${event.clientY}px`;
-                    // tooltip.style.display = 'block';
-                renderer.domElement.style.cursor = 'pointer';
+                    renderer.domElement.style.cursor = 'pointer';
+                } else {
+                    // Hide tooltip if the point is on the opposite side
+                    tooltip.style.display = 'none';
+                    renderer.domElement.style.cursor = 'default';
+                }
             } else {
+                // Original logic for when no intersections are detected
                 tooltip.style.display = 'none';
                 renderer.domElement.style.cursor = 'default';
             }
-
         }
+        
 
         let lastClickTime = 0;
         const doubleClickDelay = 300; // milliseconds
