@@ -1,59 +1,62 @@
-import express from 'express';
+import express from 'express'; 
+import { MongoClient } from 'mongodb';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import articlesRouter from './routes/articles.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
+const mongoUrl = process.env.MONGODB_URI; // Make sure MONGODB_URI is set in the environment
 
 // Get the current directory from the ES module context
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, '../public')));
 
-// Use routes
-app.use(articlesRouter);
+// Middleware
+app.use(cors());
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        error: 'Something went wrong!',
-        message: process.env.NODE_ENV === 'development' ? err.message : undefined
-    });
+// MongoDB Client Setup
+let client = new MongoClient(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
+let database;
+
+// Function to connect to MongoDB and fetch articles
+async function fetchArticlesFromMongoDB() {
+    try {
+        if (!database) {
+            console.log('Connecting to MongoDB...');
+            await client.connect();
+            console.log('Connected to MongoDB');
+            database = client.db('modern_love_articles');
+        }
+        const collection = database.collection('articles');
+        const articles = await collection.find({}).toArray();
+        return articles;
+    } catch (error) {
+        console.error('Error connecting to MongoDB:', error);
+        throw error; // Re-throw for further handling
+    }
+}
+
+// API endpoint to fetch articles
+app.get('/api/articles', async (req, res) => {
+    try {
+        const articles = await fetchArticlesFromMongoDB();
+        res.json(articles); // Send articles as JSON
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch articles.' });
+    }
 });
 
-// Handle 404s
-app.use((req, res) => {
-    res.status(404).json({ error: 'Route not found' });
-});
-
-// Serve the index.html file for all other routes (SPA support)
-app.get('*', (req, res) => {
+// Serve the index.html file when visiting the root
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // Start the server
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
-});
-
-// Handle uncaught exceptions
-process.on('uncaughtException', (err) => {
-    console.error('Uncaught Exception:', err);
-    process.exit(1);
-});
-
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err) => {
-    console.error('Unhandled Rejection:', err);
-    process.exit(1);
 });
