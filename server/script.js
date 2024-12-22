@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import fetch from 'node-fetch';
 import { MongoClient } from 'mongodb';
 // import { API_KEY, MONGODB_URI} from './config.js';

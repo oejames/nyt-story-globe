@@ -6,6 +6,7 @@
   "main": "config.js",
   "scripts": {
     "start": "node server/server.js",
+    "start-script": "node server/script.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server/server.js"
   },
@@ -17,6 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.19.2",
     "mongodb": "^6.8.0",
     "node-fetch": "^3.3.2"
