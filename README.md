@@ -22,22 +22,22 @@ The **Modern Love Story Globe** visualizes articles from the New York Times Mode
  ```bash
  npm install
  ```
-2. Create a config.js file inside server/ with the following variables
+2. Create a .env file in the project root with the following variables
 ```bash
 API_KEY=your-nyt-api-key
-MONGO_URL=your-mongodb-connection-string
+MONGODB_UIL=your-mongodb-connection-string
+
 ```
-3. Run server/script.js to populate the database
+3. Start the MongoDB Server
+4. Run the script to populate the database
   ```bash
-cd server
-node script.js
+npm run start-script
 ```
-5. Start the MongoDB Server
-6. Start the app server
+5. Start the app
 ```bash
 npm start
 ```
-5. Access the app at http://localhost:3000
+6. Access the app at http://localhost:3000
 
 
 
