@@ -12,24 +12,26 @@
     <style>
         .header {
             position: fixed;
-            top: 20%;
-            left: 20px;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.7);
+            top: 20px;
+            right: 20px;
+            background: rgba(48, 71, 94, 0.85);
             color: white;
             padding: 20px;
             z-index: 10;
             backdrop-filter: blur(4px);
             border-radius: 8px;
             max-width: 300px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
         .legend {
             display: flex;
             flex-direction: column;
             gap: 10px;
             font-size: 14px;
-            color: #ccc;
+            color: #eee;
             margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
         .dot {
             width: 10px;
@@ -39,12 +41,43 @@
             display: inline-block;
             margin-right: 8px;
         }
+        .stats-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .stat-box {
+            flex: 1;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #ccc;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <h1 style="font-size: 24px; margin-bottom: 10px;">Modern Love Stories</h1>
         <p style="font-size: 14px; line-height: 1.4;">Explore New York Times Modern Love columns mapped across the world.</p>
+        <div id="stats" class="stats-container">
+            <div class="stat-box">
+                <div class="stat-label">Stories Mapped</div>
+                <div class="stat-value" id="story-count">...</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Countries Featured</div>
+                <div class="stat-value" id="country-count">...</div>
+            </div>
+        </div>
         <div class="legend">
             <div><span class="dot"></span>Story Location</div>
             <div>👆 Hover over points to read story titles</div>
