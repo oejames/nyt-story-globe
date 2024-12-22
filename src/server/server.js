@@ -1,14 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import routes from './routes.js';
-import { closeDB } from '../db.js';
+import { closeDB } from './db.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
-app.use(express.static('public'));
+app.use(express.static('/client'));
 
 // Routes
 app.use('/', routes);
