@@ -196,42 +196,40 @@ function onWindowResize() {
     return articles;
 }
 
-// Function to get country name using OpenStreetMap Nominatim API
-async function getCountryFromNominatim(lat, lon) {
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log("data: ", data);
+// // Function to get country name using OpenStreetMap Nominatim API
+// async function getCountryFromNominatim(lat, lon) {
+//     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
+//     const response = await fetch(url);
+//     const data = await response.json();
+//     console.log("data: ", data);
 
-    // Extract and return the country from the address
-    return data.address?.country || null;
-}
+//     // Extract and return the country from the address
+//     return data.address?.country || null;
+// }
 
+// async function updateStats(articles) {
+//     const storiesWithLocation = articles.filter(article => article.lat && article.lon).length;
+//     document.getElementById('story-count').textContent = storiesWithLocation;
 
+//     const uniqueCountries = new Set();
 
-async function updateStats(articles) {
-    const storiesWithLocation = articles.filter(article => article.lat && article.lon).length;
-    document.getElementById('story-count').textContent = storiesWithLocation;
+//     for (const article of articles) {
+//         if (article.lat && article.lon) {
+//             try {
+//                 const country = await getCountryFromNominatim(article.lat, article.lon);
+//                 if (country) {
+//                     uniqueCountries.add(country);
+//                 }
+//             } catch (error) {
+//                 console.error(`Error determining country for coordinates (${article.lat}, ${article.lon}):`, error);
+//             }
+//         }
+//     }
 
-    const uniqueCountries = new Set();
+//     console.log("unique countries size", uniqueCountries.size);
 
-    for (const article of articles) {
-        if (article.lat && article.lon) {
-            try {
-                const country = await getCountryFromNominatim(article.lat, article.lon);
-                if (country) {
-                    uniqueCountries.add(country);
-                }
-            } catch (error) {
-                console.error(`Error determining country for coordinates (${article.lat}, ${article.lon}):`, error);
-            }
-        }
-    }
-
-    console.log("unique countries size", uniqueCountries.size);
-
-    document.getElementById('country-count').textContent = uniqueCountries.size;
-}
+//     document.getElementById('country-count').textContent = uniqueCountries.size;
+// }
 
 
 
@@ -241,7 +239,7 @@ async function main() {
     
     const articles = await fetchArticlesFromBackend();
 
-    await updateStats(articles);
+    // await updateStats(articles);
     
     await addPoints(articles);
     
