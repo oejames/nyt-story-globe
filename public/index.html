@@ -17,72 +17,39 @@
         }
 
         body {
-            display: flex;
             height: 100vh;
             background-color: #000;
             color: white;
             font-family: Arial, sans-serif;
             overflow: hidden;
+            position: relative;
         }
 
-        .side-panel {
-            width: 200px;
+        .explainer {
+            position: absolute;
+            top: 30px;
+            left: 30px;
             background-color: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            padding: 25px;
+            max-width: 400px;
         }
 
-        .side-panel h1 {
+        h1 {
             font-size: 24px;
-            color: #ffffff;
-            line-height: 1.2;
+            margin-bottom: 15px;
+            color: #fff;
         }
 
-        .side-panel p {
+        p {
+            color: #999;
             font-size: 14px;
             line-height: 1.5;
-            color: #999;
-        }
-
-        .stat-box {
-            background-color: rgba(45, 45, 45, 0.95);
-            padding: 15px;
-            border-radius: 4px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #fff;
-            margin-bottom: 5px;
-        }
-
-        .stat-value {
-            font-size: 24px;
-            color: #FFD700;
-            font-weight: bold;
-        }
-
-        .instructions {
-            margin-top: auto;
-            color: #999;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .instructions img {
-            width: 16px;
-            height: 16px;
-            opacity: 0.7;
+            margin-bottom: 20px;
         }
 
         .visualization-container {
-            flex: 1;
-            position: relative;
-            background-color: #000;
+            width: 100%;
+            height: 100%;
         }
 
         #info {
@@ -93,7 +60,6 @@
             padding: 10px;
             border-radius: 5px;
             display: none;
-            z-index: 1000;
         }
 
         .tooltip {
@@ -105,32 +71,18 @@
             font-size: 14px;
             pointer-events: none;
             display: none;
-            z-index: 1000;
             max-width: 300px;
         }
     </style>
 </head>
 <body>
-    <div class="side-panel">
+    <div class="explainer">
         <h1>Modern Love Stories</h1>
         <p>Explore a collection of New York Times Modern Love stories mapped across the world. Each red point represents a location mentioned in these compelling narratives of love, loss, and human connection.</p>
-        
-        <div class="stat-box">
-            <div class="stat-label">Stories Mapped</div>
-            <div class="stat-value">126</div>
-        </div>
-        
-        <div class="stat-box">
-            <div class="stat-label">Countries Featured</div>
-            <div class="stat-value">43</div>
-        </div>
-
-        <div class="instructions">
-            🌍 Drag to rotate the globe
-        </div>
-        <main class="visualization-container">
-            <div id="info"></div>
-        </main>
+    </div>
+    <div class="visualization-container">
+        <div id="info"></div>
+    </div>
     <script src="/js/app.js"></script>
 </body>
 </html>
