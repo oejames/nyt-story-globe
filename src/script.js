@@ -40,37 +40,11 @@ function extractLocations(articles) {
 async function getGeocode(location) {
     console.log(`Geocoding location: ${location}...`);
     try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}&addressdetails=1`);
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`);
         const data = await response.json();
-        
         if (data.length > 0) {
-            const result = data[0];
-            let standardizedName;
-            
-            // Handle different location types
-            if (result.address.country && !result.address.city && !result.address.state) {
-                // For countries
-                standardizedName = result.address.country;
-            } else if (result.address.city || result.address.town || result.address.village) {
-                // For cities
-                const city = result.address.city || result.address.town || result.address.village;
-                standardizedName = result.address.state ? 
-                    `${city}, ${result.address.state}` : 
-                    `${city}, ${result.address.country}`;
-            } else if (result.address.state) {
-                // For states/regions
-                standardizedName = `${result.address.state}, ${result.address.country}`;
-            } else {
-                // Fallback to the display name if structure isn't recognized
-                standardizedName = result.display_name.split(',')[0];
-            }
-            
-            console.log(`Geocoded ${location} to "${standardizedName}" [${result.lat}, ${result.lon}]`);
-            return {
-                standardizedName,
-                lat: parseFloat(result.lat),
-                lon: parseFloat(result.lon)
-            };
+            console.log(`Geocoded ${location} to [${data[0].lat}, ${data[0].lon}]`);
+            return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
         } else {
             console.log(`No geocode found for ${location}.`);
             return null;
@@ -168,9 +142,8 @@ async function fetchAndStoreArticles(startPage, lastYear) {
                     console.log(`Geocoding article location: ${article.location}...`);
                     const coords = await getGeocode(article.location);
                     if (coords) {
-                        article.lat = coords.lat;
-                        article.lon = coords.lon;
-                        article.locationName = coords.standardizedName;  
+                        article.lat = coords[0];
+                        article.lon = coords[1];
                     }
                 }
             }
